@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    logging:
+      driver: none
+  auction:
+    build: .
+    environment:
+      WAIT_HOSTS: db:3306
+    ports:
+      - 8080:8080

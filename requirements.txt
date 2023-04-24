@@ -1,1 +1,4 @@
 flask
+flask_login
+bcrypt
+mysql-connector-python
