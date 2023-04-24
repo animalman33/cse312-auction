@@ -1,1 +1,22 @@
-<h1>hello world</h1>
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>Login Pages</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" <script
+		src="{{ url_for('static', filename='functions.js') }}">
+	</script>
+</head>
+
+<body>
+	<form action="/login" method="get">
+		<input type="submit" value="Login"/>
+	</form>
+
+	<form action="/create/acc" method="get">
+		<input type="submit" value="Create Account"/>
+	</form>
+</body>
+
+</html>
