@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Login Pages</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"
+  </head>
+
+  <body onload="welcome()">
+    <script src="{{ url_for('static', filename='functions.js') }}"></script>
+    <h1>Login</h1>
+    <form method="post" action="/login">
+      <label for="username">Username</label>
+      <input type="text" name="username" /><br />
+      <label for="password">Password</label>
+      <input type="password" name="password" /><br />
+
+      <input type="submit" />
+    </form>
+  </body>
+</html>
