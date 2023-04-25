@@ -1,3 +1,29 @@
-h1 {
-	color: red;
+head {
+	height: 0;
+}
+html, body{
+	height: 100%;
+}
+body {
+	margin: 0;
+}
+
+.title {
+	align-self: center;
+}
+
+.center-box {
+	height: 100%;
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+.center-item {
+	border: solid;
+	padding: 1%;
 }

@@ -10,16 +10,26 @@
 </head>
 
 <body>
-	<script src="{{ url_for('static', filename='functions.js') }}"></script>
-	<h1>Create Account</h1>
-	<form method="post" action="/create/acc">
-		<label for="username">Username</label>
-		<input type="text" name="username" /><br />
-		<label for="password">Password</label>
-		<input type="password" name="password" /><br />
 
-		<input type="submit" />
-	</form>
+	<script src="{{ url_for('static', filename='functions.js') }}"></script>
+	<div class="center-box">
+		<div class="title">
+
+			<h1 style="text-align: center">CSE 312 Auction</h1>
+		</div>
+		<div class="center-item">
+			<h1>Create Account</h1>
+			<form method="post" action="/create/acc">
+				<label for="username">Username</label><br />
+				<input type="text" name="username" /><br /><br />
+				<label for="password">Password</label><br />
+				<input type="password" name="password" /><br /><br />
+
+				<input type="submit" />
+			</form>
+		</div>
+	</div>
+
 </body>
 
 </html>
