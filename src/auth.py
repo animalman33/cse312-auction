@@ -1,11 +1,11 @@
 import bcrypt
 from src.user import User
-from src.userdb import UserDB
+from src.database import Database
 
 
 def auth_user(username: str, password: str):
 
-    with UserDB() as DB:
+    with Database() as DB:
         user_info = DB.get_user_info(username)
 
         if user_info:
@@ -18,5 +18,5 @@ def add_user(username: str, password: str):
 
     hashpass = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
-    with UserDB() as DB:
+    with Database() as DB:
         DB.add_user(username, hashpass.decode())
