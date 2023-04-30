@@ -13,6 +13,7 @@ COPY src /app/src
 COPY main.py /app
 COPY requirements.txt /app
 COPY templates /app/templates
+COPY static /app/static
 
 # Creates a non-root user with an explicit UID and adds permission to access the /app folder
 # For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers

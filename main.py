@@ -132,6 +132,13 @@ def home_page():
 def initial_page():
     return render_template("index.html")
 
+@app.route("/login")
+def login_page():
+    return render_template("login.html")
+
+@app.route("/create/acc")
+def create_acc_page():
+    return render_template("create_acc.html")
 
 if __name__ == "__main__":
     Database().setup()
