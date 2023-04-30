@@ -70,8 +70,8 @@ class Database:
             """
         CREATE TABLE IF NOT EXISTS wins (
             amount INT NOT NULL,
-            aucID INT,
-            userID INT,
+            aucID INT NOT NULL,
+            userID INT NOT NULL,
             FOREIGN KEY (userID) REFERENCES users(userID),
             FOREIGN KEY (aucID) REFERENCES auctions(aucID)
         )
@@ -131,7 +131,7 @@ class Database:
             (amount, aucid, userid),
         )
 
-    def add_auc(self, userid, auc_name, start_price) -> bool:
+    def add_auc(self, userid, auc_name, start_price) -> dict | None:
         """
         adds an auction to the database
         if the auctions already exists false is returned
@@ -140,12 +140,20 @@ class Database:
         self.cur.execute("SELECT * FROM auctions WHERE name = %s", (auc_name,))
         item = self.cur.fetchone()
         if item:
-            return False
+            return None
         self.cur.execute(
             "INSERT INTO auctions (name, cost, startcost, completed, userid) VALUES (%s, %s, %s, %s, %s)",
             (auc_name, start_price, start_price, False, userid),
         )
-        return True
+        self.cur.execute("SELECT * WHERE name=%s", auc_name)
+        data = self.cur.fetchone()
+        if data:
+
+            return {
+                "filename": str(data[7]),
+                "aucid": int(data[8])
+            }
+        return None
 
     def add_bid(self, bid_amount: int, auc_id: int, userid: int) -> bool:
         """
@@ -215,3 +223,41 @@ class Database:
 
         return retval
 
+    def get_auc(self, aucid: int):
+        """gets an auction based on its id"""
+
+        self.cur.execute("SELECT * FROM auctions WHERE aucID=%s", (aucid,))
+        data = self.cur.fetchone()
+        retval = {}
+
+        if data:
+            retval["name"] = data[0]
+            retval["cost"] = data[2]
+            retval[ "completed" ] = data[3]
+            if retval["completed"]:
+                retval["winner"] = data[5]
+            retval['owner'] = data[4]
+            retval['image'] = data[6]
+
+        return retval
+
+    def get_auc_list(self):
+        self.cur.execute("SELECT * FROM auctions")
+
+        data = self.cur.fetchall()
+
+        retval = []
+
+        if data:
+            for x in data:
+                add = {}
+                add["name"] = x[0]
+                add["cost"] = x[2]
+                add[ "completed" ] = x[3]
+                if add["completed"]:
+                    add["winner"] = x[5]
+                add['owner'] = x[4]
+                add['image'] = x[6]
+                retval.append(add)
+
+        return retval

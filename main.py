@@ -58,35 +58,6 @@ def create_acc():
 
     return redirect("/login")
 
-@app.route("/user/add/bid", method=["POST"])
-@login_required
-def add_user_bid():
-    """
-    this function is called on post for route '/user/add/bid'
-    it expects a json message of format
-    {
-    'auc_id': id<int>,
-    'amount': amount<int>
-    }
-
-    send a json message of {'status': 0} if it succeeded
-    otherwise send {'status': 1} if the amount is less than the current bid or if the auctions does not exist
-    """
-    data = request.get_json()
-    if data:
-        amount = data.get('amount')
-        auc_id = data.get('auc_id')
-        if amount is None or auc_id is None:
-            return abort(400)
-        with Database() as DB:
-            if(DB.add_bid(math.floor(amount), auc_id, current_user.get_id())):
-                return jsonify({"status": 0}, success=True)
-            else:
-                return jsonify({'status': 1})
-    else:
-        return abort(415)
-
-
 @app.route("/user/bids")
 @login_required
 def get_user_bids():
@@ -113,6 +84,43 @@ def get_user_auc():
         data = DB.get_user_auc(current_user.get_id())
 
         return jsonify(data)
+
+@app.route("/auc/create", method=["POST"])
+@login_required
+def create_auc():
+
+    form = request.form
+    image = request.files
+
+    with Database() as DB:
+        name = form.get("name")
+        cost = form.get("cost")
+        auc_image = image.get("auc_image")
+        userid = current_user.get_id()
+        if name is None or cost is None or auc_image is None:
+            return abort(400)
+        with Database() as DB:
+            check = DB.add_auc(userid, name, cost)
+            if check is None:
+                return abort(409)
+    return abort(404)
+
+@app.route("/auc/list")
+@login_required
+def list_aucs():
+    with Database() as DB:
+        data = DB.get_auc_list()
+        return jsonify(data)
+
+@app.route("/auc/<int:id>")
+@login_required
+def get_auc(id):
+
+    with Database() as DB:
+        data = DB.get_auc(id)
+        if data:
+            return render_template("auc.html")
+    return abort(404)
 
 
 @app.route("/user/home")
