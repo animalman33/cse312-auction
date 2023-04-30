@@ -16,6 +16,8 @@ login_manager = LoginManager()
 
 login_manager.init_app(app)
 
+login_manager.login_view = "/login"
+
 @login_manager.user_loader
 def user_loader(id):
     with Database() as DB:
@@ -67,8 +69,8 @@ def add_user_bid():
     'amount': amount<int>
     }
 
-    send a json message of {'status': 1} if it succeeded
-    otherwise send {'status': 0} if the amount is less than the current bid or if the auctions does not exist
+    send a json message of {'status': 0} if it succeeded
+    otherwise send {'status': 1} if the amount is less than the current bid or if the auctions does not exist
     """
     data = request.get_json()
     if data:
@@ -78,11 +80,11 @@ def add_user_bid():
             return abort(400)
         with Database() as DB:
             if(DB.add_bid(math.floor(amount), auc_id, current_user.get_id())):
-                return jsonify({"status": 1}, success=True)
+                return jsonify({"status": 0}, success=True)
             else:
-                return jsonify({'status': 0})
+                return jsonify({'status': 1})
     else:
-        return abort(400)
+        return abort(415)
 
 
 @app.route("/user/bids")
@@ -95,23 +97,28 @@ def get_user_bids():
 
 @app.route("/user/wins")
 @login_required
-def get_wins():
+def get_user_wins():
 
     with Database() as DB:
-        DB.get_user_wins()
-    return jsonify("DNE")
+
+        data = DB.get_user_wins(current_user.get_id())
+
+        return jsonify(data)
 
 @app.route("/user/auc")
 @login_required
-def get_auc():
+def get_user_auc():
+    with Database() as DB:
 
-    return abort(404)
+        data = DB.get_user_auc(current_user.get_id())
+
+        return jsonify(data)
 
 
 @app.route("/user/home")
 @login_required
 def home_page():
-    return render_template("index.html")
+    return render_template("home.html")
 
 @app.route("/")
 def initial_page():

@@ -44,9 +44,12 @@ class Database:
             startcost INT NOT NULL,
             completed BOOLEAN,
             userID INT,
+            winner INT,
+            filename INT AUTO_INCREMENT UNIQUE,
             aucID INT NOT NULL AUTO_INCREMENT UNIQUE,
             PRIMARY KEY (aucID),
-            FOREIGN KEY (userID) REFERENCES users(userID)
+            FOREIGN KEY (userID) REFERENCES users(userID),
+            FOREIGN KEY (winner) REFERENCES users(ID)
         )
         """
         )
@@ -155,15 +158,6 @@ class Database:
         self.cur.execute("SELECT * FROM auctions WHERE aucID=%s", (auc_id,))
 
         auction = self.cur.fetchone()
-        """        CREATE TABLE IF NOT EXISTS bids (
-            amount INT NOT NULL,
-            bidID INT NOT NULL AUTO_INCREMENT UNIQUE,
-            aucID INT,
-            userID INT,
-            PRIMARY KEY (bidID),
-            FOREIGN KEY (userID) REFERENCES users(userID),
-            FOREIGN KEY (aucID) REFERENCES auctions(aucID)
-        )"""
         if auction is None:
             return False
         elif int(auction[1]) > bid_amount:
@@ -175,7 +169,7 @@ class Database:
 
     def get_user_bids(self, userid: int):
 
-        self.cur.execute("SELECT * FROM bids WHERE userID=%s ORDER BY bidID DESC LIMIT 50", (userid,))
+        self.cur.execute("SELECT * FROM bids WHERE userID=%s ORDER BY bidID DESC LIMIT 50")
         bids = self.cur.fetchall()
         retVal = []
 
@@ -185,5 +179,39 @@ class Database:
         return retVal
 
     def get_user_wins(self, userid: int):
+        """Gets all user wins based on userid"""
+        self.cur.execute("SELECT * FROM wins WHERE userID=%s", (userid,))
+        data = self.cur.fetchall()
 
-        self.cur.execute("SELECT * FROM ")
+        retval = []
+
+        for x in data:
+            retval.append({
+                "amount": x[0],
+                "aucID": x[1]
+            })
+
+        return retval
+
+    def get_user_auc(self, userid):
+        """Gets all user auctions based on userid"""
+        self.cur.execute("SELECT * FROM auctions WHERE userID=%s", (userid,))
+        data = self.cur.fetchall()
+        if not data:
+            return []
+
+        retval = []
+
+        for x in data:
+            cur_data = {
+                "name": str(x[0]),
+                "startcost": int(x[1]),
+                "completed": bool(x[3]),
+                "id": int(x[7])
+            }
+            if x[3]:
+                cur_data["winner"] = int(x[5])
+            retval.append(cur_data)
+
+        return retval
+
