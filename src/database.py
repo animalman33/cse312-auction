@@ -45,11 +45,10 @@ class Database:
             completed BOOLEAN,
             userID INT,
             winner INT,
-            filename INT AUTO_INCREMENT UNIQUE,
             aucID INT NOT NULL AUTO_INCREMENT UNIQUE,
             PRIMARY KEY (aucID),
             FOREIGN KEY (userID) REFERENCES users(userID),
-            FOREIGN KEY (winner) REFERENCES users(ID)
+            FOREIGN KEY (winner) REFERENCES users(userID)
         )
         """
         )
@@ -148,9 +147,7 @@ class Database:
         self.cur.execute("SELECT * WHERE name=%s", auc_name)
         data = self.cur.fetchone()
         if data:
-
             return {
-                "filename": str(data[7]),
                 "aucid": int(data[8])
             }
         return None
@@ -217,7 +214,7 @@ class Database:
                 "completed": bool(x[3]),
                 "id": int(x[7])
             }
-            if x[3]:
+            if cur_data["completed"]:
                 cur_data["winner"] = int(x[5])
             retval.append(cur_data)
 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>{{ username }} home</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" </head>
+
+<body onload="onload()">
+	<script src="{{ url_for('static', filename='home.js') }}"></script>
+	<div>
+	  <h1>My Auctions</h1>
+	  <div class="fixed">
+	    <table id="auctions">
+	      <tr>
+		<th>Name</th>
+		<th>Poster</th>
+		<th>Cost</th>
+		<th>Completed</th>
+		<th>Winner</th>
+		<th>Visit</th>
+	      </tr>
+	    </table>
+	  </div>
+	</div>
+	<div name="bids">
+		<h1>My Bids</h1>
+	</div>
+	<div name="wins">
+	  <h1>My Wins</h1>
+	</div>
+
+</body>
+
+</html>

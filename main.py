@@ -42,11 +42,8 @@ def login_user():
         flask_login.login_user(user_obj, remember=True)
         return redirect("/user/home")
     else:
-        return redirect("/login")
+        return redirect("/user/home")
 
-@app.route("/login")
-def login_page():
-    return render_template("index.html")
 
 @app.route("/create/acc", methods=["POST"])
 def create_acc():
@@ -85,7 +82,7 @@ def get_user_auc():
 
         return jsonify(data)
 
-@app.route("/auc/create", method=["POST"])
+@app.route("/auc/create", methods=["POST"])
 @login_required
 def create_auc():
 
