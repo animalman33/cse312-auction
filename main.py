@@ -1,74 +1,141 @@
-from flask import Flask, render_template, request, redirect
-from flask_login import LoginManager, current_user
-from src.userdb import UserDB
+from flask import Flask, abort, render_template, redirect, request, jsonify
+from src.database import Database
+import math
+from flask_login import LoginManager, current_user, login_required
+import flask_login
 from src.user import User
-# import socketio
-from flask_socketio import SocketIO, send, join_room, leave_room
+from src.auth import *
+import secrets
 
 app = Flask(__name__)
-socketio = SocketIO(app)
-socketio.run(app)
+
+secret_key = secrets.token_urlsafe()
+app.secret_key = secret_key
 
 login_manager = LoginManager()
+
 login_manager.init_app(app)
 
-# Get session user
+login_manager.login_view = "/login"
+
 @login_manager.user_loader
 def user_loader(id):
-    with UserDB() as DB:
+    with Database() as DB:
         user = DB.get_user_id(id)
         if user:
             return User(user[0], int(user[2]))
         return None
 
-user = user_loader(id)
+@app.errorhandler(404)
+def return_404(e):
+    return render_template("404.html"), 404
 
-# Redirects non-users to login
-@login_manager.unauthorized_handler
-def unauthorized():
-    if user == None:
-        return redirect("/login")
+@app.route("/login", methods=["POST"])
+def login_user():
+    data = request.form
+
+    username = data["username"]
+    password = data["password"]
+
+    user_obj = auth_user(username, password)
+    if user_obj:
+        flask_login.login_user(user_obj, remember=True)
+        return redirect("/user/home")
     else:
-        pass
+        return redirect("/user/home")
 
-# Render page
-@app.route('/')
-def index():
-    return render_template('index.html')
 
-# Join a auction room
-@socketio.on('join')
-def join_auction(user):
-    username = user['username']
-    auction_room = user['room']
-    join_room(auction_room)
-    send(username + ' has joined.', to=auction_room)
+@app.route("/create/acc", methods=["POST"])
+def create_acc():
+    data = request.form
+    username = data["username"]
+    password = data["password"]
 
-# Leave a auction room
-@socketio.on('leave')
-def leave_auction(user):
-    username = user['username']
-    auction_room = user['room']
-    leave_room(auction_room)
-    send(username + ' has left.', to=auction_room)
+    add_user(username, password)
 
-# See new bids
-@socketio.on('bid')
-def new_bid(json):
-    print("Bid" + str(json))
+    return redirect("/login")
 
-# Send a bid
-@socketio.on('bid')
-def handle_bid(json):
-    send(json)
+@app.route("/user/bids")
+@login_required
+def get_user_bids():
 
-# @app.route("/auctions/<int:auction_id>", methods=["POST"])
-# def AuctionConnection():
-#     users = []
+    with Database() as DB:
+        info = DB.get_user_bids(current_user.get_id())
+        return jsonify(info)
 
-# @app.websocket('/websocket')
-# def Auction(websocket: SocketIO):
-#     while True:
+@app.route("/user/wins")
+@login_required
+def get_user_wins():
+
+    with Database() as DB:
+
+        data = DB.get_user_wins(current_user.get_id())
+
+        return jsonify(data)
+
+@app.route("/user/auc")
+@login_required
+def get_user_auc():
+    with Database() as DB:
+
+        data = DB.get_user_auc(current_user.get_id())
+
+        return jsonify(data)
+
+@app.route("/auc/create", methods=["POST"])
+@login_required
+def create_auc():
+
+    form = request.form
+    image = request.files
+
+    with Database() as DB:
+        name = form.get("name")
+        cost = form.get("cost")
+        auc_image = image.get("auc_image")
+        userid = current_user.get_id()
+        if name is None or cost is None or auc_image is None:
+            return abort(400)
+        with Database() as DB:
+            check = DB.add_auc(userid, name, cost)
+            if check is None:
+                return abort(409)
+    return abort(404)
+
+@app.route("/auc/list")
+@login_required
+def list_aucs():
+    with Database() as DB:
+        data = DB.get_auc_list()
+        return jsonify(data)
+
+@app.route("/auc/<int:id>")
+@login_required
+def get_auc(id):
+    with Database() as DB:
+        data = DB.get_auc(id)
+        if data:
+            return render_template("auc.html")
+    return abort(404)
+
+@app.route("/user/home")
+@login_required
+def home_page():
+    return render_template("home.html")
+
+@app.route("/")
+def initial_page():
+    return render_template("index.html")
+
+@app.route("/login")
+def login_page():
+    return render_template("login.html")
+
+@app.route("/create/acc")
+def create_acc_page():
+    return render_template("create_acc.html")
 
 if __name__ == "__main__":
+    Database().setup()
+
     app.run("0.0.0.0", port=8080, debug=True)
