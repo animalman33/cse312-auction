@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, redirect
 from flask_login import LoginManager, current_user
-from src.database import UserDB
+from src.database import Database
 from src.user import User
 from flask_socketio import SocketIO, send, join_room, leave_room
+from main import *
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -14,7 +15,7 @@ login_manager.init_app(app)
 # Get session user
 @login_manager.user_loader
 def user_loader(id):
-    with UserDB() as DB:
+    with Database() as DB:
         user = DB.get_user_id(id)
         if user:
             return User(user[0], int(user[2]))
@@ -32,11 +33,13 @@ def unauthorized():
 
 # Render page
 @app.route('/')
+@current_user
 def index():
     return render_template('index.html')
 
 # Join a auction room
 @socketio.on('join')
+@current_user
 def join_auction(user):
     username = user['username']
     auction_room = user['room']
@@ -45,6 +48,7 @@ def join_auction(user):
 
 # Leave a auction room
 @socketio.on('leave')
+@current_user
 def leave_auction(user):
     username = user['username']
     auction_room = user['room']
@@ -53,11 +57,13 @@ def leave_auction(user):
 
 # See new bids
 @socketio.on('bid')
+@current_user
 def new_bid(json):
     print("Bid" + str(json))
 
 # Send a bid
 @socketio.on('bid')
+@current_user
 def handle_bid(json):
     send(json)
 
