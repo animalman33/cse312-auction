@@ -10,20 +10,25 @@ socketio = SocketIO(app)
 
 users = {}
 
-# Render page
-@app.route('/')
-@current_user
-def index():
-    return render_template('index.html')
-
 # Join a auction room
-@socketio.on('join')
+@socketio.on('join_auction')
 @current_user
 def join_auction(user, auctionID):
     users[user] = request.sid
     join_room(auctionID)
     send("You have entered!", to=auctionID)
     emit("feed", {user} + ' has joined.', broadcast=True)
+
+# Create a auction
+@socketio.on('create_auction')
+@current_user
+def create_auction(user, price, name):
+    # Gets the user based off session ID
+    username = None
+    for user in users:
+        if users[user] == request.sid:
+            username = user
+    Database.add_auc(username, Database.get_user_info(username)[2], name, price)
 
 # Leave a auction room
 @socketio.on('leave')
