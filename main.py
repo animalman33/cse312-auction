@@ -1,6 +1,5 @@
 from flask import Flask, abort, render_template, redirect, request, jsonify
 from src.database import Database
-import math
 from flask_login import LoginManager, current_user, login_required
 import flask_login
 from src.user import User
@@ -27,7 +26,7 @@ def user_loader(id):
         return None
 
 @app.errorhandler(404)
-def return_404(e):
+def return_404(_):
     return render_template("404.html"), 404
 
 @app.route("/login", methods=["POST"])
