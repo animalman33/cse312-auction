@@ -1,28 +1,35 @@
 <!DOCTYPE html>
 
+
 <html>
+
+
   <head>
     <title>Login Pages</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
 
   <body onload="welcome()">
+
     <script src="{{ url_for('static', filename='functions.js') }}"></script>
-    <div class="center-box">
+    <div style="text-align: center;">
       <div class="title">
-        <h1 style="text-align: center">CSE 312 Auction</h1>
-      </div>
-      <div class="center-item">
+        <h1>CSE 312 Auction</h1>
         <h1>Login</h1>
         <form method="post" action="/login">
           <label for="username">Username</label><br />
-          <input type="text" name="username" /><br /><br />
+          <input type="text" id="username" name="username" /><br /><br />
           <label for="password">Password</label><br />
-          <input type="password" name="password" /><br /><br />
+          <input type="password" id="password" name="password" /><br /><br />
 
           <input type="submit" />
         </form>
       </div>
     </div>
+
+
   </body>
+
+
 </html>
+

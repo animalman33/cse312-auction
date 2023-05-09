@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 
+
 <html>
 
-<head>
-	<title>Login Pages</title>
-	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" <script
-		src="{{ url_for('static', filename='functions.js') }}">
-	</script>
-</head>
 
-<body>
-	<form action="/login" method="get">
-		<input type="submit" value="Login"/>
-	</form>
+	<head>
+		<title>Login Pages</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<script src="{{ url_for('static', filename='functions.js') }}"></script>
+	</head>
 
-	<form action="/create/acc" method="get">
-		<input type="submit" value="Create Account"/>
-	</form>
-</body>
+	<body>
+		<div style="text-align: center">
+			<form action="/login" method="post">
+				<input type="submit" value="Login"/>
+			</form>
+
+			<form action="/create/acc" method="post">
+				<input type="submit" value="Create Account"/>
+			</form>
+		</div>
+	</body>
+
 
 </html>
