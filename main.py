@@ -34,22 +34,29 @@ def return_404(e):
 def login_user():
     data = request.form
 
-    username = data["username"]
-    password = data["password"]
+    username = data.get("username")
+    password = data.get("password")
+
+    if username is None or password is None:
+        return redirect("/login")
 
     user_obj = auth_user(username, password)
     if user_obj:
         flask_login.login_user(user_obj, remember=True)
         return redirect("/user/home")
     else:
-        return redirect("/user/home")
+        return redirect("/login")
 
 
 @app.route("/create/acc", methods=["POST"])
 def create_acc():
     data = request.form
-    username = data["username"]
-    password = data["password"]
+
+    username = data.get("username")
+    password = data.get("password")
+
+    if username is None or password is None:
+        return redirect("/create/acc")
 
     add_user(username, password)
 
