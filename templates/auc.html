@@ -5,11 +5,11 @@
 
     <head>
 	    <title>Auction</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<script src="{{ url_for('static', filename='functions.js') }}"></script>
     </head>
-    <div style="text-align: center;">
         <h1> Auction</h1>
         {{itemreplace}} <br>
         {{usersreplace}}
-    </div>
 
 </html>

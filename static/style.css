@@ -27,3 +27,57 @@ body {
 	border: solid;
 	padding: 1%;
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url('jesse.jpg');
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input[type="submit"] {
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #73EEFF;
+}
+
+input[type="submit"]:active {
+  background-color: #0697AB;
+}
+
+h1{
+  color: #C20A55;
+  font-weight: bold;
+  font: 30px Arial, Helvetica, sans-serif;
+  text-shadow: 0 0 10px white;
+}
+
+label {
+  color: #C20A55;
+  font: 15px Arial, Helvetica, sans-serif;
+  text-shadow: 0 0 10px white;
+}
+
+input[type=text], input[type=password] {
+  padding: 7px;
+  border: 2px solid gray;
+  border-radius: 4px;
+  font-size: 12px;
+}
