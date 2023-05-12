@@ -174,7 +174,7 @@ class Database:
 
     def get_user_bids(self, userid: int):
 
-        self.cur.execute("SELECT * FROM bids WHERE userID=%s ORDER BY bidID DESC LIMIT 50")
+        self.cur.execute("SELECT * FROM bids WHERE userID=%s", (userid,))
         bids = self.cur.fetchall()
         retVal = []
 
