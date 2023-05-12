@@ -24,12 +24,24 @@
 	    </table>
 	  </div>
 	</div>
-	<div name="bids">
+	<div id="bids">
 		<h1>My Bids</h1>
 	</div>
-	<div name="wins">
+	<div id="wins">
 	  <h1>My Wins</h1>
 	</div>
+	
+	
+<form method="post" action="/auc/create">
+        <label for="name" >name</label>
+        <input type="text" id="name" name="name" required/><br /><br />
+        <label for="cost">description</label>
+        <input type="number" id="cost" name="cost" required /><br /><br />
+		  <label for= "auc_image" >image</label>
+		  <input type="file" id="auc_image" name="auc_image" required/><br /><br />
+
+        <input type="submit" />
+      </form>
 
 </body>
 
