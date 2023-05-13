@@ -100,7 +100,7 @@ def create_auc():
         cost = form.get("cost")
         auc_image = image.get("auc_image")
         userid = current_user.get_id()
-        if name is None or cost is None or auc_image is None:
+        if name is None or cost is None:
             return abort(400)
         with Database() as DB:
             check = DB.add_auc(userid, name, cost)
