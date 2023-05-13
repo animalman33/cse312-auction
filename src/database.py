@@ -148,7 +148,7 @@ class Database:
         data = self.cur.fetchone()
         if data:
             return {
-                "aucid": int(data[8])
+                "aucid": int(data[6])
             }
         return None
 

@@ -106,7 +106,7 @@ def create_auc():
             check = DB.add_auc(userid, name, cost)
             if check is None:
                 return abort(409)
-    return abort(404)
+    return redirect(f'/auc/{check["aucid"]}')
 
 @app.route("/auc/list")
 @login_required
