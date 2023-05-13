@@ -144,7 +144,7 @@ class Database:
             "INSERT INTO auctions (name, cost, startcost, completed, userid) VALUES (%s, %s, %s, %s, %s)",
             (auc_name, start_price, start_price, False, userid),
         )
-        self.cur.execute("SELECT * WHERE name=%s", auc_name)
+        self.cur.execute("SELECT * WHERE name=%s", (auc_name,))
         data = self.cur.fetchone()
         if data:
             return {
