@@ -212,7 +212,7 @@ class Database:
                 "name": str(x[0]),
                 "startcost": int(x[1]),
                 "completed": bool(x[3]),
-                "id": int(x[7])
+                "id": int(x[6])
             }
             if cur_data["completed"]:
                 cur_data["winner"] = int(x[5])
